@@ -31,7 +31,7 @@ jobs:
       run: |
         pytest --cov=.  # Run pytest with coverage report
 
-    # New steps to set up MySQL in a Docker container
+    # Steps for MySQL setup using Docker
     - name: Set up MySQL using Docker
       run: |
         docker pull mysql:8.0 # Pull MySQL version 8.0
@@ -39,17 +39,15 @@ jobs:
 
     - name: Wait for MySQL to be ready
       run: |
-        # Wait for MySQL to be fully up and running
-        sleep 20  # Wait for 20 seconds for MySQL to initialize
+        sleep 20  # Wait for MySQL to initialize
 
     - name: Copy the SQL file into the Docker container
       run: |
-        # Copy the complex_query.sql file into the Docker container
-        docker cp complex_query.sql mysql-container:/complex_query.sql
+        # Use the full path for the SQL file, assuming the working directory is /home/runner/work/{repo_name}/{repo_name}/
+        docker cp ${{ github.workspace }}/complex_query.sql mysql-container:/complex_query.sql
 
     - name: Verify MySQL connection and run SQL query
       run: |
-        # Verify MySQL connection and run the SQL query inside the container
+        # Verify MySQL connection and run the SQL query
         docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "SHOW DATABASES;"
         docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < /complex_query.sql
-
