@@ -5,6 +5,7 @@ pytest == 7.4.0        ## for running tests (used in the test and coverage targe
 pytest-cov == 4.0.0    ## for measuring test coverage (used in the coverage target)
 pylint == 2.15.3       ## for linting Python code (used in the lint target)
 flake8 == 4.0.1        ## for linting Python code
+mysql-connector-python==8.0.29
 
 # web
 # fastapi == 0.85.0    ## web framework 
