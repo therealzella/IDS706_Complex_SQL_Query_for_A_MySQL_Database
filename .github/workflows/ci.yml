@@ -56,4 +56,3 @@ jobs:
           sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < complex_query.sql
 
 
-
