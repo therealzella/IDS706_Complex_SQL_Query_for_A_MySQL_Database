@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9']
+        python-version: ['3.9']  # Now using only Python 3.9
 
     steps:
     - uses: actions/checkout@v3
@@ -25,29 +25,10 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Run tests with pytest
       run: |
-        pytest --cov=.  # Run pytest with coverage report
+        pytest --cov=.  # Use pytest with coverage report
 
-    # Steps for MySQL setup using Docker
-    - name: Set up MySQL using Docker with Volume Mount
-      run: |
-        docker pull mysql:8.0 # Pull MySQL version 8.0
-        docker run --name mysql-container -v ${{ github.workspace }}:/workspace -e MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} -e MYSQL_DATABASE=my_database -d -p 3306:3306 mysql:8.0
-
-    - name: Wait for MySQL to be ready
-      run: |
-        sleep 20  # Wait for MySQL to initialize
-
-    - name: Debug - List files in mounted workspace
-      run: |
-        # Let's debug and check what files exist in the /workspace folder inside the container
-        docker exec mysql-container ls -al /workspace
-
-    - name: Verify MySQL connection and run SQL query
-      run: |
-        # Verify MySQL connection and run the SQL query directly from the mounted volume
-        docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "SHOW DATABASES;"
-        docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < /workspace/complex_query.sql
