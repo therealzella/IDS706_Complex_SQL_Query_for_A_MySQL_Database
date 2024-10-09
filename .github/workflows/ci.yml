@@ -41,6 +41,11 @@ jobs:
       run: |
         sleep 20  # Wait for MySQL to initialize
 
+    - name: Debug - List files in mounted workspace
+      run: |
+        # Let's debug and check what files exist in the /workspace folder inside the container
+        docker exec mysql-container ls -al /workspace
+
     - name: Verify MySQL connection and run SQL query
       run: |
         # Verify MySQL connection and run the SQL query directly from the mounted volume
