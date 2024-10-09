@@ -1,6 +1,6 @@
-# IDS706_Python_Script_interacting_with_SQL_Database
+# IDS706_Complex_SQL_Query_for_A_MySQL_Database
 
-This repository is for the IDS706 course's assignment: IDS706_Python_Script_interacting_with_SQL_Database
+This repository is for the IDS706 course's assignment: IDS706_Complex_SQL_Query_for_A_MySQL_Database
 
 ![CI](https://github.com/therealzella/IDS706-python-github-template/actions/workflows/ci.yml/badge.svg)
 
@@ -75,7 +75,3 @@ This project utilizes GitHub Actions for continuous integration and deployment, 
         - Installation of dependencies via make install.
         - Linting with flake8 to maintain code quality.
         - Running unit tests with pytest.
-
-## CRUD Operations
-This project includes the test for CRUD operations by running different SQL commands. The process is running successfully in the terminal, and here's the screenshot for the terminal:
-![Screenshot of Database Operations](https://github.com/therealzella/IDS706_Python_Script_interacting_with_SQL_Database/blob/c631d32db10a1d16a8f221628799f8a5ffc48a17/Screenshot%202024-10-03%20at%2015.12.30.png)
