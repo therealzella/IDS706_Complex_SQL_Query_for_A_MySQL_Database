@@ -32,22 +32,17 @@ jobs:
         pytest --cov=.  # Run pytest with coverage report
 
     # Steps for MySQL setup using Docker
-    - name: Set up MySQL using Docker
+    - name: Set up MySQL using Docker with Volume Mount
       run: |
         docker pull mysql:8.0 # Pull MySQL version 8.0
-        docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} -e MYSQL_DATABASE=my_database -d -p 3306:3306 mysql:8.0
+        docker run --name mysql-container -v ${{ github.workspace }}:/workspace -e MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} -e MYSQL_DATABASE=my_database -d -p 3306:3306 mysql:8.0
 
     - name: Wait for MySQL to be ready
       run: |
         sleep 20  # Wait for MySQL to initialize
 
-    - name: Copy the SQL file into the Docker container
-      run: |
-        # Use the full path for the SQL file, assuming the working directory is /home/runner/work/{repo_name}/{repo_name}/
-        docker cp ${{ github.workspace }}/complex_query.sql mysql-container:/complex_query.sql
-
     - name: Verify MySQL connection and run SQL query
       run: |
-        # Verify MySQL connection and run the SQL query
+        # Verify MySQL connection and run the SQL query directly from the mounted volume
         docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "SHOW DATABASES;"
-        docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < /complex_query.sql
+        docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < /workspace/complex_query.sql
