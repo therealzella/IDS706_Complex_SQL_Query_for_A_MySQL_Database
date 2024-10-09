@@ -40,10 +40,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install mysql-server
           sudo service mysql start
-
+          mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ secrets.MYSQL_ROOT_PASSWORD }}';"
+          mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "CREATE DATABASE your_database;"  # Optional step to create a database
+      
       - name: Run SQL query
         run: |
-          mysql -u root -e "source complex_query.sql;"
+          mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} your_database < complex_query.sql
 
 
 
