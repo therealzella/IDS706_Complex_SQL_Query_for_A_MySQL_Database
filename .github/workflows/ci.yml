@@ -42,9 +42,14 @@ jobs:
         # Wait for MySQL to be fully up and running
         sleep 20  # Wait for 20 seconds for MySQL to initialize
 
+    - name: Copy the SQL file into the Docker container
+      run: |
+        # Copy the complex_query.sql file into the Docker container
+        docker cp complex_query.sql mysql-container:/complex_query.sql
+
     - name: Verify MySQL connection and run SQL query
       run: |
-        # Connect to the MySQL container and run the SQL query
+        # Verify MySQL connection and run the SQL query inside the container
         docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "SHOW DATABASES;"
-        docker cp complex_query.sql mysql-container:/complex_query.sql
         docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < /complex_query.sql
+
