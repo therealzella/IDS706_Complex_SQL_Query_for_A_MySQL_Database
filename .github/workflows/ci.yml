@@ -41,10 +41,10 @@ jobs:
           sudo apt-get install mysql-server -y
           sudo service mysql start
           
-          # Set a password for the root user
+          # Set a password for the root user and switch to native password authentication
           sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ secrets.MYSQL_ROOT_PASSWORD }}';"
           
-          # List all existing databases to see what’s available
+          # Use the root password to list all databases
           sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "SHOW DATABASES;"
 
       - name: Create new database and run SQL query
@@ -54,5 +54,4 @@ jobs:
           
           # Run the SQL query from the file 'complex_query.sql' on the newly created database
           sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < complex_query.sql
-
 
