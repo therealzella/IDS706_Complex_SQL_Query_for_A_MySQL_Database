@@ -4,9 +4,36 @@ This repository is for the IDS706 course's assignment: IDS706_Complex_SQL_Query_
 
 ![CI](https://github.com/therealzella/IDS706-python-github-template/actions/workflows/ci.yml/badge.svg)
 
-## Complex SQL Query Explanation
+# Complex SQL Query for MySQL Database
 
-This query retrieves the total amount spent by each customer by joining the `customers`, `orders`, and `order_items` tables. The results are grouped by customer name and sorted in descending order of the total amount spent.
+## Project Overview
+
+This project demonstrates a complex SQL query executed on a MySQL database set up using Docker. The query involves joining multiple tables, aggregating data, and filtering the results based on a specific condition. A CI/CD pipeline is implemented using GitHub Actions to automate the setup and execution of the query.
+
+## How It Works
+
+- **SQL Query**: The query joins the `customers` and `orders` tables to calculate the total value of orders placed by each customer, filtering for orders made after January 1, 2023.
+- **Docker**: The MySQL database is set up in a Docker container, and the query is executed inside the container.
+- **CI/CD Pipeline**: The pipeline runs automatically on every push to the repository. It sets up the MySQL environment, executes the SQL query, and logs the output.
+
+## Project Files
+
+- `complex_query.sql`: Contains the SQL query that is executed on the MySQL database.
+- `.github/workflows/ci.yml`: Defines the pipeline that automates the MySQL setup and query execution.
+
+## Steps to Run the Project
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-username/IDS706_Complex_SQL_Query_for_A_MySQL_Database.git
+
+2. **Run the SQL Query**:
+   Push your changes, and the CI/CD pipeline will automatically set up MySQL in Docker and execute the SQL query.
+
+3. **Expected Output**:
+   The output will display a table of customer order totals sorted in descending order, and the expected result of the query will be displayed in the GitHub Actions logs. For        example, the output will show a table listing customers and their total order values.
+
+---
 
 ## Table of Contents
 - [Project Overview](#project-overview)
