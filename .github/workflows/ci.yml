@@ -32,27 +32,23 @@ jobs:
       run: |
         pytest --cov=.  # Use pytest with coverage report
 
-  run_sql_query:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up MySQL
-        run: |
-          sudo apt-get update
-          sudo apt-get install mysql-server -y
-          sudo service mysql start
-          
-          # Reset the root password explicitly to ensure it's applied correctly
-          sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${{ secrets.MYSQL_ROOT_PASSWORD }}'; FLUSH PRIVILEGES;"
-          
-          # Test with the new password
-          sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "SHOW DATABASES;"
+    - name: Set up MySQL
+      run: |
+        # Install MySQL server
+        sudo apt-get update
+        sudo apt-get install mysql-server -y
+        sudo service mysql start
 
-      - name: Create new database and run SQL query
-        run: |
-          # Create a new database called 'my_database'
-          sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS my_database;"
-          
-          # Run the SQL query from the file 'complex_query.sql' on the newly created database
-          sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < complex_query.sql
+        # Set root password using GitHub secret and enable native password authentication
+        sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ secrets.MYSQL_ROOT_PASSWORD }}'; FLUSH PRIVILEGES;"
 
+    - name: Verify MySQL Setup
+      run: |
+        # Log in and show databases to verify MySQL is set up correctly
+        sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "SHOW DATABASES;"
 
+    - name: Run SQL query on database
+      run: |
+        # Create database and run the SQL query from complex_query.sql
+        sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS my_database;"
+        sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < complex_query.sql
