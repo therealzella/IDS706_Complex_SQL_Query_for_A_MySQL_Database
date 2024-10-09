@@ -32,7 +32,7 @@ jobs:
       run: |
         pytest --cov=.  # Use pytest with coverage report
 
- run_sql_query:
+  run_sql_query:
     runs-on: ubuntu-latest
     steps:
       - name: Set up MySQL
@@ -46,4 +46,13 @@ jobs:
           
           # List all existing databases to see what’s available
           sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "SHOW DATABASES;"
+
+      - name: Create new database and run SQL query
+        run: |
+          # Create a new database called 'my_database'
+          sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS my_database;"
+          
+          # Run the SQL query from the file 'complex_query.sql' on the newly created database
+          sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < complex_query.sql
+
 
