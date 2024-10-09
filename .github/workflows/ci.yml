@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9']  # Now using only Python 3.9
+        python-version: ['3.9']
 
     steps:
     - uses: actions/checkout@v3
@@ -25,30 +25,26 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Run tests with pytest
       run: |
-        pytest --cov=.  # Use pytest with coverage report
+        pytest --cov=.  # Run pytest with coverage report
 
-    - name: Set up MySQL
+    # New steps to set up MySQL in a Docker container
+    - name: Set up MySQL using Docker
       run: |
-        # Install MySQL server
-        sudo apt-get update
-        sudo apt-get install mysql-server -y
-        sudo service mysql start
+        docker pull mysql:8.0 # Pull MySQL version 8.0
+        docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} -e MYSQL_DATABASE=my_database -d -p 3306:3306 mysql:8.0
 
-        # Set root password using GitHub secret and enable native password authentication
-        sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ secrets.MYSQL_ROOT_PASSWORD }}'; FLUSH PRIVILEGES;"
-
-    - name: Verify MySQL Setup
+    - name: Wait for MySQL to be ready
       run: |
-        # Log in and show databases to verify MySQL is set up correctly
-        sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "SHOW DATABASES;"
+        # Wait for MySQL to be fully up and running
+        sleep 20  # Wait for 20 seconds for MySQL to initialize
 
-    - name: Run SQL query on database
+    - name: Verify MySQL connection and run SQL query
       run: |
-        # Create database and run the SQL query from complex_query.sql
-        sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS my_database;"
-        sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < complex_query.sql
+        # Connect to the MySQL container and run the SQL query
+        docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "SHOW DATABASES;"
+        docker cp complex_query.sql mysql-container:/complex_query.sql
+        docker exec mysql-container mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} my_database < /complex_query.sql
