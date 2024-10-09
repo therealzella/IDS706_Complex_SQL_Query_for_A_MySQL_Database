@@ -4,6 +4,10 @@ This repository is for the IDS706 course's assignment: IDS706_Complex_SQL_Query_
 
 ![CI](https://github.com/therealzella/IDS706-python-github-template/actions/workflows/ci.yml/badge.svg)
 
+## Complex SQL Query Explanation
+
+This query retrieves the total amount spent by each customer by joining the `customers`, `orders`, and `order_items` tables. The results are grouped by customer name and sorted in descending order of the total amount spent.
+
 ## Table of Contents
 - [Project Overview](#project-overview)
 - [Installation](#installation)
@@ -75,3 +79,6 @@ This project utilizes GitHub Actions for continuous integration and deployment, 
         - Installation of dependencies via make install.
         - Linting with flake8 to maintain code quality.
         - Running unit tests with pytest.
+
+
+
