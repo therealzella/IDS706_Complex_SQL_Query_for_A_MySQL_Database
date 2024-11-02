@@ -1,50 +1,35 @@
-import sqlite3
-import os
+import mysql.connector
 
-def connect_to_db(db_name="test.db"):
-    conn = sqlite3.connect(db_name)
-    print(f"Connected to database: {db_name}")
-    return conn
+# Connect to the MySQL database in the Docker container
+connection = mysql.connector.connect(
+    host="localhost",     
+    user="user",          
+    password="password",  
+    database="mydatabase" 
+)
 
-def create_table(conn):
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-                         id INTEGER PRIMARY KEY,
-                         name TEXT NOT NULL,
-                         age INTEGER)''')
-    conn.commit()
-    print("Table 'users' created successfully.")
+cursor = connection.cursor()
 
-def insert_user(conn, name, age):
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO users (name, age) VALUES (?, ?)", (name, age))
-    conn.commit()
-    print(f"Inserted user: {name}, {age}")
+# Create or update your tables here if needed
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS customers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    total_amount_spent DECIMAL(10, 2) NOT NULL
+);
+""")
 
-def read_users(conn):
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users")
-    return cursor.fetchall()
+query = "YOUR_COMPLEX_QUERY_HERE"  # Replace this with the actual query logic
+cursor.execute(query)
 
-def update_user(conn, user_id, new_name):
-    cursor = conn.cursor()
-    cursor.execute("UPDATE users SET name = ? WHERE id = ?", (new_name, user_id))
-    conn.commit()
+# Fetch and display the results
+results = cursor.fetchall()
+for row in results:
+    print(row)
 
-def delete_user(conn, user_id):
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
-    conn.commit()
+# Close the connection
+cursor.close()
+connection.close()
 
-if __name__ == "__main__":
-    print(f"Current working directory: {os.getcwd()}")
-
-    conn = connect_to_db("test.db")  # This will create 'test.db' on disk
-    create_table(conn)
-
-    insert_user(conn, "John Doe", 30)
-
-    conn.close()
-    print("Database connection closed.")
 
 
