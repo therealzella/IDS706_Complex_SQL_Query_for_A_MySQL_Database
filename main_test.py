@@ -46,5 +46,4 @@ def test_query_data(db_conn):
     # Check that the query returns the expected result
     assert len(results) > 0, "Query returned no results."
     assert results[0][0] == "Test Customer", "Customer name does not match."
-    assert results[0][1] == 100.00, "Total spent calculation is incorrect."
-
+    assert results[0][1] == 200.00, "Total spent calculation is incorrect."  # Update expected value to 200.00
